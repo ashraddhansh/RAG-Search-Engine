@@ -1,6 +1,6 @@
 import json
-from os import remove
 import string
+from nltk.stem import PorterStemmer
 from constants import JSON_FILE, STOPWORDS_FILES
 
 PROC_STOPWORDS = []
@@ -24,8 +24,14 @@ with open(STOPWORDS_FILES, 'r') as f:
 def remove_stopwords(token_list):
         return [x for x in token_list if x not in PROC_STOPWORDS]
 
+
+stemmer = PorterStemmer()
+
+def stemming(token_list) -> list:
+    return list(map(lambda x : stemmer.stem(x), token_list))
+
 def pre_process(query) -> list:
-    return remove_stopwords(tokenize(remove_punctuation(query.lower())))
+    return stemming(remove_stopwords(tokenize(remove_punctuation(query.lower()))))
 
 def keyword_search(query):
     with open(JSON_FILE, 'r') as f:
