@@ -31,4 +31,3 @@ def keyword_search(query):
             return_string = return_string + f"{str(i+1)}. {result_list[i]}\n"
         return return_string
 
-remove_punctuation("hello")
