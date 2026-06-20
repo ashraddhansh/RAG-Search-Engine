@@ -9,7 +9,6 @@ def build_command():
     inverted_index.build()
     inverted_index.save()
     docs = inverted_index.get_documents("merida")
-    print(f"First document for token 'merida' = {docs[0]}")
 
 def main() -> None:
     parser = argparse.ArgumentParser(description="Keyword Search CLI")
