@@ -2,6 +2,7 @@ import json
 import string
 from nltk.stem import PorterStemmer
 from constants import JSON_FILE, STOPWORDS_FILES
+from tf_idf import InvertedIndex
 
 PROC_STOPWORDS = []
 
@@ -43,19 +44,20 @@ def load_movies():
 
 
 def keyword_search(query):
-    movies_list = load_movies()
-    result_list = []
+    inverted_index = InvertedIndex()
+
+    try:
+        inverted_index.load()
+    except Exception as e:
+        print(f"Error: {e}")
+
+    result_object_list = []
     query_tokens = pre_process(query)
+
+    doc_id_list = []
+    for token in query_tokens:
+        if inverted_index.index[token]:
+            doc_id_list = inverted_index.index.get(token)
+    for id in doc_id_list[:5]:
+        result_object_list.append(inverted_index.docmap.get(id))
         
-    for item in movies_list:
-        title_tokens = pre_process(item["title"])
-
-        if any(q in token for q in query_tokens for token in title_tokens):
-            result_list.append(item["title"])
-
-
-    return_string = ""
-    for i in range(len(result_list[:5])):
-        return_string = return_string + f"{str(i+1)}. {result_list[i]}\n"
-    return return_string
-
