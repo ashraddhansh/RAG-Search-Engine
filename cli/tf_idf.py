@@ -5,6 +5,7 @@ import json
 from utils import pre_process
 import os
 from constants import CACHE_DIR
+import math
 
 
 class InvertedIndex:
@@ -75,4 +76,12 @@ class InvertedIndex:
         if counter is None:
             return 0
         return counter[term]
+
+    def get_bm25_idf(self, term:str) -> float:
+        total_documents = len(self.docmap)
+        df = len(self.index[term])
+        return math.log((total_documents - df + 0.5) / (df + 0.5) + 1)
+
+
+
 
