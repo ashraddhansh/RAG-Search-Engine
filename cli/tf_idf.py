@@ -1,6 +1,6 @@
 import pickle
 from collections import defaultdict, Counter
-from constants import JSON_FILE
+from constants import JSON_FILE, BM25_K1
 import json
 from utils import pre_process
 import os
@@ -82,6 +82,8 @@ class InvertedIndex:
         df = len(self.index[term])
         return math.log((total_documents - df + 0.5) / (df + 0.5) + 1)
 
-
-
+    def get_bm25_tf(self, doc_id, term, k1=BM25_K1):
+        tf = self.get_tf(doc_id, term)
+        saturated_tf_score =  (tf * (k1 + 1)) / (tf + k1)
+        return saturated_tf_score
 
