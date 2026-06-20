@@ -29,3 +29,11 @@ def stemming(token_list) -> list:
 
 def pre_process(query) -> list:
     return stemming(remove_stopwords(tokenize(remove_punctuation(query.lower()))))
+
+
+def tokenize_term(term):
+    tokens = pre_process(term)
+
+    if len(tokens) != 1:
+        raise ValueError(f"Expected exactly one token, got {len(tokens)}")
+    return tokens[0]

@@ -1,5 +1,5 @@
 import pickle
-from collections import defaultdict
+from collections import defaultdict, Counter
 from constants import JSON_FILE
 import json
 from utils import pre_process
@@ -11,11 +11,15 @@ class InvertedIndex:
     def __init__(self):
         self.index = defaultdict(set)
         self.docmap = {}
+        self.term_frequencies = {}
 
     def __add_document(self, doc_id, text):
         token_list = pre_process(text)
+        self.term_frequencies[doc_id] = Counter()
         for token in token_list:
             self.index[token].add(doc_id)
+            self.term_frequencies[doc_id][token] += 1
+
 
     def get_documents(self, term):
         return sorted(list(self.index[term]))
@@ -40,19 +44,35 @@ class InvertedIndex:
             pickle.dump(self.index, f)
         with open(os.path.join(CACHE_DIR, "docmap.pkl"), "wb") as f:
             pickle.dump(self.docmap, f)
+        with open(os.path.join(CACHE_DIR, "term_ferquencies.pkl"), "wb") as f:
+            pickle.dump(self.term_frequencies, f)
 
     def load(self):
         index_path = os.path.join(CACHE_DIR, "index.pkl")
         docmap_path = os.path.join(CACHE_DIR, "docmap.pkl")
+        term_frequecies_path = os.path.join(CACHE_DIR, "term_ferquencies.pkl")
 
         if not os.path.isfile(index_path):
             raise FileNotFoundError(f"Missing file: {index_path}")
         if not os.path.isfile(docmap_path):
             raise FileNotFoundError(f"Missing file: {docmap_path}")
+        if not os.path.isfile(docmap_path):
+            raise FileNotFoundError(f"Missing file: {docmap_path}")
+        if not os.path.isfile(term_frequecies_path):
+            raise FileNotFoundError(f"Missing file: {term_frequecies_path}")
 
         with open(index_path, "rb") as f:
             self.index = pickle.load(f)
 
         with open(docmap_path, "rb") as f:
             self.docmap = pickle.load(f)
+
+        with open(term_frequecies_path, "rb") as f:
+            self.term_frequencies = pickle.load(f)
+
+    def get_tf(self, doc_id, term):
+        counter = self.term_frequencies.get(doc_id)
+        if counter is None:
+            return 0
+        return counter[term]
 
