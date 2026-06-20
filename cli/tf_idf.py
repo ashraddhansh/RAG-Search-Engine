@@ -1,8 +1,11 @@
 import pickle
 from collections import defaultdict
-from keyword_search import pre_process, load_movies
+from constants import JSON_FILE
+import json
+from utils import pre_process
 import os
 from constants import CACHE_DIR
+
 
 class InvertedIndex:
     def __init__(self):
@@ -18,7 +21,15 @@ class InvertedIndex:
         return sorted(list(self.index[term]))
 
     def build(self):
+
+        def load_movies():
+            with open(JSON_FILE, 'r') as f:
+                json_data = json.load(f)
+                movies_list = json_data["movies"]
+            return movies_list
         movies_list = load_movies()
+
+
         for m in movies_list:
             self.__add_document(m['id'], f"{m['title']} {m['description']}")
             self.docmap.update({m['id']: m})
