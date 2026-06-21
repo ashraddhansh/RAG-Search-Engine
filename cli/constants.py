@@ -2,3 +2,4 @@ JSON_FILE = "/home/ashraddhansh/Developer/github.com/rag-search-engine/data/movi
 STOPWORDS_FILES = "/home/ashraddhansh/Developer/github.com/rag-search-engine/data/stopwords.txt"
 CACHE_DIR = "/home/ashraddhansh/Developer/github.com/rag-search-engine/cache/"
 BM25_K1 = 1.5
+BM25_B = 0.75
